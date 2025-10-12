@@ -38,6 +38,9 @@ class Car
     }
 }*/
 
+// Zadanie 4
+
+/*
 Osoba osoba1 = new Osoba("Ania", 18);
 Osoba osoba2 = new Osoba("Ola", 4);
 
@@ -60,3 +63,4 @@ class Osoba
         Wiek = wiek;
     }
 }
+*/
