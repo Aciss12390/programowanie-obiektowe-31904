@@ -52,7 +52,7 @@ while (user_password != correct_password)
 }*/
 
 // Zad 2
-
+/*
 int liczba = 0;
 
 do
@@ -60,5 +60,17 @@ do
     Console.Write("Podaj liczbę większą od 0: ");
     liczba = Convert.ToInt32(Console.ReadLine());
 }
-while (liczba < 0);
+while (liczba <= 0);
 Console.WriteLine("Poprawna liczba!");
+*/
+
+// Zad 3
+
+/*
+string[] cities = { "Toruń", "Wrocław", "Kraków", "Warszawa", "Poznań" };
+
+foreach (string city in cities)
+{
+    Console.WriteLine($"Miasto: {city}");
+}
+*/
