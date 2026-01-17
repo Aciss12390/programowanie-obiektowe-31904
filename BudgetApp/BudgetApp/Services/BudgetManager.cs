@@ -1,6 +1,7 @@
 ﻿using BudzetDomowy.Models;
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BudzetDomowy.Services
 {
@@ -12,15 +13,15 @@ namespace BudzetDomowy.Services
 
         public BudgetManager()
         {
-            // Domyślne kategorie (możesz później rozbudować)
+            // Domyślne kategorie
             _categories.AddRange(new[]
             {
-        new Category(1, "Jedzenie"),
-        new Category(2, "Transport"),
-        new Category(3, "Rachunki"),
-        new Category(4, "Rozrywka"),
-        new Category(5, "Inne")
-    });
+                new Category(1, "Jedzenie"),
+                new Category(2, "Transport"),
+                new Category(3, "Rachunki"),
+                new Category(4, "Rozrywka"),
+                new Category(5, "Inne")
+            });
         }
 
         public IReadOnlyList<Category> GetCategories()
@@ -61,7 +62,7 @@ namespace BudzetDomowy.Services
 
         public decimal GetIncomeSum(int year, int month)
         {
-            // biore tylko przychody z miesiąca i sumuje
+            // biorę tylko przychody z miesiąca i sumuję
             return _transactions
                 .Where(t => t.Date.Year == year && t.Date.Month == month)
                 .OfType<Income>()
@@ -70,7 +71,7 @@ namespace BudzetDomowy.Services
 
         public decimal GetExpenseSum(int year, int month)
         {
-            // biore tylko wydatki z miesiąca i sumujemy
+            // biorę tylko wydatki z miesiąca i sumuję
             return _transactions
                 .Where(t => t.Date.Year == year && t.Date.Month == month)
                 .OfType<Expense>()
@@ -91,16 +92,7 @@ namespace BudzetDomowy.Services
 
         public void SetLimit(BudgetLimit limit)
         {
-            if (limit == null)
-                throw new ArgumentNullException(nameof(limit));
-
-            // usuwam stary limit dla tego samego roku/miesiąca/kategorii (żeby nie było duplikatów)
-            _limits.RemoveAll(l =>
-                l.Year == limit.Year &&
-                l.Month == limit.Month &&
-                l.CategoryId == limit.CategoryId);
-
-            _limits.Add(limit);
+            AddOrUpdateLimit(limit);
         }
 
         public void AddOrUpdateLimit(BudgetLimit limit)
@@ -126,19 +118,24 @@ namespace BudzetDomowy.Services
             // ile wydano na kategorie w tym miesiącu
             var spentByCategory = GetExpenseSumsByCategory(year, month);
 
-            // biore limity tylko z danego miesiąca
+            // biorę limity tylko z danego miesiąca
             var monthLimits = _limits.Where(l => l.Year == year && l.Month == month);
 
             foreach (var limit in monthLimits)
             {
-                // jeśli w ogóle nic nie wydano w tej kategorii, to traktuje jako 0
+                // jeśli w ogóle nic nie wydano w tej kategorii, to traktuję jako 0
                 decimal spent = 0;
                 if (spentByCategory.TryGetValue(limit.CategoryId, out var value))
                     spent = value;
 
-                // jeśli wydano więcej niż limit -> tworze ostrzeżenie
+                // jeśli wydano więcej niż limit -> tworzę ostrzeżenie
                 if (spent > limit.LimitAmount)
-                    warnings.Add(new LimitWarning(limit.CategoryId, limit.LimitAmount, spent));
+                {
+                    var category = _categories.FirstOrDefault(c => c.Id == limit.CategoryId);
+                    string categoryName = category?.Name ?? $"Kategoria {limit.CategoryId}";
+
+                    warnings.Add(new LimitWarning(limit.CategoryId, categoryName, limit.LimitAmount, spent));
+                }
             }
 
             return warnings;
@@ -148,8 +145,5 @@ namespace BudzetDomowy.Services
         {
             return _limits;
         }
-
-
-
     }
 }

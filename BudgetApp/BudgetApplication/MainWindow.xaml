@@ -64,7 +64,7 @@
                     <DataTemplate>
                         <TextBlock>
                 <Run Text="Kategoria "/>
-                <Run Text="{Binding CategoryId, Mode=OneWay}"/>
+                <Run Text="{Binding CategoryName, Mode=OneWay}"/>
                 <Run Text=" | Limit: "/>
                 <Run Text="{Binding Limit, Mode=OneWay}"/>
                 <Run Text=" | Wydano: "/>
