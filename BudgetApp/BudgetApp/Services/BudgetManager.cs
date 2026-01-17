@@ -8,7 +8,25 @@ namespace BudzetDomowy.Services
     {
         private readonly List<Transaction> _transactions = new();
         private readonly List<BudgetLimit> _limits = new();
+        private readonly List<Category> _categories = new();
 
+        public BudgetManager()
+        {
+            // Domyślne kategorie (możesz później rozbudować)
+            _categories.AddRange(new[]
+            {
+        new Category(1, "Jedzenie"),
+        new Category(2, "Transport"),
+        new Category(3, "Rachunki"),
+        new Category(4, "Rozrywka"),
+        new Category(5, "Inne")
+    });
+        }
+
+        public IReadOnlyList<Category> GetCategories()
+        {
+            return _categories;
+        }
 
         public void Add(Transaction transaction)
         {

@@ -13,6 +13,15 @@ namespace BudzetDomowy.ViewModels
         private readonly BudgetManager _budgetManager;
 
         public ObservableCollection<Transaction> Transactions { get; } = new();
+        public ObservableCollection<Category> Categories { get; } = new();
+
+        private Category? _selectedCategory;
+        public Category? SelectedCategory
+        {
+            get => _selectedCategory;
+            set { _selectedCategory = value; OnPropertyChanged(); }
+        }
+
 
         // Pola formularza
         private DateTime _date = DateTime.Today;
@@ -59,6 +68,13 @@ namespace BudzetDomowy.ViewModels
             AddCommand = new RelayCommand(AddTransaction, CanAdd);
 
             Reload();
+
+            Categories.Clear();
+            foreach (var c in _budgetManager.GetCategories())
+                Categories.Add(c);
+
+            SelectedCategory = Categories.FirstOrDefault();
+
         }
 
         private void Reload()
@@ -80,9 +96,12 @@ namespace BudzetDomowy.ViewModels
                 ? _budgetManager.GetAll().Max(t => t.Id) + 1
                 : 1;
 
+            int categoryId = SelectedCategory?.Id ?? 1;
+
             Transaction tx = IsIncome
-                ? new Income(nextId, Date, Amount, Description, CategoryId)
-                : new Expense(nextId, Date, Amount, Description, CategoryId);
+                ? new Income(nextId, Date, Amount, Description, categoryId)
+                : new Expense(nextId, Date, Amount, Description, categoryId);
+
 
             _budgetManager.Add(tx);
 
