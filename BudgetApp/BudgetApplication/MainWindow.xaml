@@ -21,8 +21,12 @@
             <TextBlock Text="Opis" Margin="0,10,0,0"/>
             <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" />
 
-            <TextBlock Text="CategoryId" Margin="0,10,0,0"/>
-            <TextBox Text="{Binding CategoryId, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Text="Kategoria" Margin="0,10,0,0"/>
+
+            <ComboBox ItemsSource="{Binding Categories}"
+          SelectedItem="{Binding SelectedCategory}"
+          DisplayMemberPath="Name"
+          />
 
             <CheckBox Content="To jest PRZYCHÓD (odznacz = WYDATEK)"
                       IsChecked="{Binding IsIncome}"
@@ -37,6 +41,30 @@
         <!-- PRAWA STRONA: lista -->
         <StackPanel Grid.Column="1">
             <TextBlock Text="Transakcje" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+
+            <TextBlock Text="{Binding Balance, StringFormat=Saldo: {0} zł}"
+           FontSize="16"
+           FontWeight="Bold"
+           Margin="0,0,0,10"/>
+
+            <TextBlock Text="Ostrzeżenia limitów" FontWeight="Bold" Margin="0,10,0,5"/>
+
+            <ListBox ItemsSource="{Binding Warnings}" Height="80">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                <Run Text="Kategoria "/>
+                <Run Text="{Binding CategoryId}"/>
+                <Run Text=" | Limit: "/>
+                <Run Text="{Binding Limit}"/>
+                <Run Text=" | Wydano: "/>
+                <Run Text="{Binding Spent}"/>
+                <Run Text=" | Przekroczono: "/>
+                <Run Text="{Binding OverBy}"/>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
             <DataGrid ItemsSource="{Binding Transactions}"
                       AutoGenerateColumns="False"

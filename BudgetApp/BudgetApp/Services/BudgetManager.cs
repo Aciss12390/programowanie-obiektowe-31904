@@ -1,6 +1,6 @@
 ﻿using BudzetDomowy.Models;
 using System.Linq;
-
+using System;
 
 namespace BudzetDomowy.Services
 {
@@ -99,6 +99,22 @@ namespace BudzetDomowy.Services
                 l.Year == limit.Year &&
                 l.Month == limit.Month &&
                 l.CategoryId == limit.CategoryId);
+
+            _limits.Add(limit);
+        }
+
+        public void AddOrUpdateLimit(BudgetLimit limit)
+        {
+            if (limit == null)
+                throw new ArgumentNullException(nameof(limit));
+
+            var existing = _limits.FirstOrDefault(l =>
+                l.Year == limit.Year &&
+                l.Month == limit.Month &&
+                l.CategoryId == limit.CategoryId);
+
+            if (existing != null)
+                _limits.Remove(existing);
 
             _limits.Add(limit);
         }

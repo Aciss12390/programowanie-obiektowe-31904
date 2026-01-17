@@ -1,4 +1,6 @@
-﻿namespace BudzetDomowy.Models
+﻿using System;
+
+namespace BudzetDomowy.Models
 {
     public class BudgetLimit
     {
