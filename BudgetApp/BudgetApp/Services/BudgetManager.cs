@@ -156,6 +156,19 @@ namespace BudzetDomowy.Services
             ImportData(data);
         }
 
+        public void SaveToSqlite(string path)
+        {
+            var storage = new SqliteBudgetStorage();
+            storage.Save(path, ExportData());
+        }
+
+        public void LoadFromSqlite(string path)
+        {
+            var storage = new SqliteBudgetStorage();
+            var data = storage.Load(path);
+            ImportData(data);
+        }
+
         public BudgetData ExportData()
         {
             var data = new BudgetData();

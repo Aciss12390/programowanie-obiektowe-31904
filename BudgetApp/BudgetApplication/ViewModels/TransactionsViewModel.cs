@@ -98,6 +98,8 @@ namespace BudzetDomowy.ViewModels
         public RelayCommand AddLimitCommand { get; }
         public RelayCommand SaveJsonCommand { get; }
         public RelayCommand LoadJsonCommand { get; }
+        public RelayCommand SaveSqliteCommand { get; }
+        public RelayCommand LoadSqliteCommand { get; }
 
         public TransactionsViewModel(BudgetManager budgetManager)
         {
@@ -107,6 +109,8 @@ namespace BudzetDomowy.ViewModels
             AddLimitCommand = new RelayCommand(AddLimit, CanAddLimit);
             SaveJsonCommand = new RelayCommand(SaveJson);
             LoadJsonCommand = new RelayCommand(LoadJson);
+            SaveSqliteCommand = new RelayCommand(SaveSqlite);
+            LoadSqliteCommand = new RelayCommand(LoadSqlite);
 
             Reload();
         }
@@ -223,6 +227,40 @@ namespace BudzetDomowy.ViewModels
 
             foreach (var w in warnings)
                 Warnings.Add(w);
+        }
+
+        private void SaveSqlite()
+        {
+            try
+            {
+                string path = GetSqlitePath();
+                _budgetManager.SaveToSqlite(path);
+                StatusMessage = $"Zapisano dane do bazy SQLite: {path}";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Błąd zapisu do SQLite: {ex.Message}";
+            }
+        }
+
+        private void LoadSqlite()
+        {
+            try
+            {
+                string path = GetSqlitePath();
+                _budgetManager.LoadFromSqlite(path);
+                Reload();
+                StatusMessage = $"Wczytano dane z bazy SQLite: {path}";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Błąd wczytywania z SQLite: {ex.Message}";
+            }
+        }
+
+        private static string GetSqlitePath()
+        {
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "budget.db");
         }
     }
 }
