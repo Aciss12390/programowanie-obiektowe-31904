@@ -3,6 +3,7 @@ using BudzetDomowy.Models;
 using BudzetDomowy.Services;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 
 namespace BudzetDomowy.ViewModels
@@ -15,6 +16,13 @@ namespace BudzetDomowy.ViewModels
         public ObservableCollection<Transaction> Transactions { get; } = new();
         public ObservableCollection<Category> Categories { get; } = new();
         public ObservableCollection<LimitWarning> Warnings { get; } = new();
+
+        private string _statusMessage = "";
+        public string StatusMessage
+        {
+            get => _statusMessage;
+            private set { _statusMessage = value; OnPropertyChanged(); }
+        }
 
         private decimal _balance;
         public decimal Balance
@@ -88,6 +96,8 @@ namespace BudzetDomowy.ViewModels
 
         public RelayCommand AddCommand { get; }
         public RelayCommand AddLimitCommand { get; }
+        public RelayCommand SaveJsonCommand { get; }
+        public RelayCommand LoadJsonCommand { get; }
 
         public TransactionsViewModel(BudgetManager budgetManager)
         {
@@ -95,25 +105,33 @@ namespace BudzetDomowy.ViewModels
 
             AddCommand = new RelayCommand(AddTransaction, CanAdd);
             AddLimitCommand = new RelayCommand(AddLimit, CanAddLimit);
-
-            // Dodaję obsługę kategorii w TransactionsViewModel (Categories + SelectedCategory)
-            Categories.Clear();
-            foreach (var c in _budgetManager.GetCategories())
-                Categories.Add(c);
-
-            SelectedCategory = Categories.FirstOrDefault();
+            SaveJsonCommand = new RelayCommand(SaveJson);
+            LoadJsonCommand = new RelayCommand(LoadJson);
 
             Reload();
         }
 
         private void Reload()
         {
+            ReloadCategories();
+
             Transactions.Clear();
             foreach (var t in _budgetManager.GetAll().OrderByDescending(x => x.Date))
                 Transactions.Add(t);
 
             Balance = _budgetManager.GetBalance();
             UpdateWarnings();
+        }
+
+        private void ReloadCategories()
+        {
+            int? selectedId = SelectedCategory?.Id;
+
+            Categories.Clear();
+            foreach (var c in _budgetManager.GetCategories())
+                Categories.Add(c);
+
+            SelectedCategory = Categories.FirstOrDefault(c => c.Id == selectedId) ?? Categories.FirstOrDefault();
         }
 
         private bool CanAdd()
@@ -160,6 +178,40 @@ namespace BudzetDomowy.ViewModels
             LimitAmount = 0;
 
             UpdateWarnings();
+        }
+
+        private void SaveJson()
+        {
+            try
+            {
+                string path = GetJsonPath();
+                _budgetManager.SaveToJson(path);
+                StatusMessage = $"Zapisano dane do pliku: {path}";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Błąd zapisu: {ex.Message}";
+            }
+        }
+
+        private void LoadJson()
+        {
+            try
+            {
+                string path = GetJsonPath();
+                _budgetManager.LoadFromJson(path);
+                Reload();
+                StatusMessage = $"Wczytano dane z pliku: {path}";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Błąd wczytywania: {ex.Message}";
+            }
+        }
+
+        private static string GetJsonPath()
+        {
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "budget.json");
         }
 
         private void UpdateWarnings()
