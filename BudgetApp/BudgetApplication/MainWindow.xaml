@@ -64,17 +64,18 @@
                     <DataTemplate>
                         <TextBlock>
                 <Run Text="Kategoria "/>
-                <Run Text="{Binding CategoryId}"/>
+                <Run Text="{Binding CategoryId, Mode=OneWay}"/>
                 <Run Text=" | Limit: "/>
-                <Run Text="{Binding Limit}"/>
+                <Run Text="{Binding Limit, Mode=OneWay}"/>
                 <Run Text=" | Wydano: "/>
-                <Run Text="{Binding Spent}"/>
+                <Run Text="{Binding Spent, Mode=OneWay}"/>
                 <Run Text=" | Przekroczono: "/>
-                <Run Text="{Binding OverBy}"/>
+                <Run Text="{Binding OverBy, Mode=OneWay}"/>
                         </TextBlock>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+
 
             <DataGrid ItemsSource="{Binding Transactions}"
                       AutoGenerateColumns="False"
