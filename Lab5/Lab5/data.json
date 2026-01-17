@@ -1,0 +1,12 @@
+[
+  {
+    "model": "Audi",
+    "year": 2023,
+    "color": "Czarny"
+  },
+  {
+    "model": "VW",
+    "year": 2021,
+    "color": "Srebrny"
+  }
+]
