@@ -1,6 +1,6 @@
 ﻿namespace BudzetDomowy.Models
 {
-    // To jest "pudełko", w którym trzymamy wszystko, co chcemy zapisać do pliku.
+    // To jest "pudełko", w którym trzymam wszystko, co chce zapisać do pliku.
     public class BudgetData
     {
         public List<Category> Categories { get; set; } = new();

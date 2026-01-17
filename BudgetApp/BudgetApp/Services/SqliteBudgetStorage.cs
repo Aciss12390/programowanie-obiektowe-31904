@@ -18,7 +18,7 @@ namespace BudzetDomowy.Services
 
             using var tx = connection.BeginTransaction();
 
-            // Czyścimy tabele, żeby zapis był "od zera" (najprostszy wariant na laby)
+            // Czyszcze tabele, żeby zapis był "od zera"
             ExecuteNonQuery(connection, "DELETE FROM Categories;", tx);
             ExecuteNonQuery(connection, "DELETE FROM Limits;", tx);
             ExecuteNonQuery(connection, "DELETE FROM Transactions;", tx);

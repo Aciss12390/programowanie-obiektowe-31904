@@ -7,7 +7,7 @@ namespace BudzetDomowy.Services
     {
         private readonly JsonSerializerOptions _options = new()
         {
-            WriteIndented = true // żeby plik był czytelny, a nie jedna długa linia
+            WriteIndented = true 
         };
 
         public void Save(string path, BudgetData data)

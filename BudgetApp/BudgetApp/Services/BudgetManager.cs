@@ -35,7 +35,7 @@ namespace BudzetDomowy.Services
 
         public IReadOnlyList<Transaction> GetByMonth(int year, int month)
         {
-            // wybieramy tylko te transakcje, które są z danego roku i miesiąca
+            // wybieram tylko te transakcje, które są z danego roku i miesiąca
             return _transactions
                 .Where(t => t.Date.Year == year && t.Date.Month == month)
                 .ToList();
@@ -43,7 +43,7 @@ namespace BudzetDomowy.Services
 
         public decimal GetIncomeSum(int year, int month)
         {
-            // bierzemy tylko przychody z miesiąca i sumujemy
+            // biore tylko przychody z miesiąca i sumuje
             return _transactions
                 .Where(t => t.Date.Year == year && t.Date.Month == month)
                 .OfType<Income>()
@@ -52,7 +52,7 @@ namespace BudzetDomowy.Services
 
         public decimal GetExpenseSum(int year, int month)
         {
-            // bierzemy tylko wydatki z miesiąca i sumujemy
+            // biore tylko wydatki z miesiąca i sumujemy
             return _transactions
                 .Where(t => t.Date.Year == year && t.Date.Month == month)
                 .OfType<Expense>()
@@ -76,7 +76,7 @@ namespace BudzetDomowy.Services
             if (limit == null)
                 throw new ArgumentNullException(nameof(limit));
 
-            // usuwamy stary limit dla tego samego roku/miesiąca/kategorii (żeby nie było duplikatów)
+            // usuwam stary limit dla tego samego roku/miesiąca/kategorii (żeby nie było duplikatów)
             _limits.RemoveAll(l =>
                 l.Year == limit.Year &&
                 l.Month == limit.Month &&
@@ -92,17 +92,17 @@ namespace BudzetDomowy.Services
             // ile wydano na kategorie w tym miesiącu
             var spentByCategory = GetExpenseSumsByCategory(year, month);
 
-            // bierzemy limity tylko z danego miesiąca
+            // biore limity tylko z danego miesiąca
             var monthLimits = _limits.Where(l => l.Year == year && l.Month == month);
 
             foreach (var limit in monthLimits)
             {
-                // jeśli w ogóle nic nie wydano w tej kategorii, to traktujemy jako 0
+                // jeśli w ogóle nic nie wydano w tej kategorii, to traktuje jako 0
                 decimal spent = 0;
                 if (spentByCategory.TryGetValue(limit.CategoryId, out var value))
                     spent = value;
 
-                // jeśli wydano więcej niż limit -> tworzymy ostrzeżenie
+                // jeśli wydano więcej niż limit -> tworze ostrzeżenie
                 if (spent > limit.LimitAmount)
                     warnings.Add(new LimitWarning(limit.CategoryId, limit.LimitAmount, spent));
             }

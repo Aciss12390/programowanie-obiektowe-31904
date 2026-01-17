@@ -9,7 +9,7 @@
         public string Description { get; set; } = "";
         public int CategoryId { get; set; }
 
-        // "Income" albo "Expense" - dzięki temu wiemy co złożyć po wczytaniu.
+        // "Income" albo "Expense" - dzięki temu wiem co złożyć po wczytaniu.
         public string Type { get; set; } = "";
     }
 }
